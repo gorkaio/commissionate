@@ -1,19 +1,13 @@
 # Commissionate
 
-To start your Phoenix server:
+## Datastores
 
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.create && mix ecto.migrate`
-  * Start Phoenix endpoint with `mix phx.server`
+Events are stored in `commisionate_eventstore_{mix.env}` database, while projections use `commissionate_readstore_{mix.env}` database.
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+## Mix tasks
 
-Ready to run in production? Please [check our deployment guides](http://www.phoenixframework.org/docs/deployment).
-
-## Learn more
-
-  * Official website: http://www.phoenixframework.org/
-  * Guides: http://phoenixframework.org/docs/overview
-  * Docs: https://hexdocs.pm/phoenix
-  * Mailing list: http://groups.google.com/group/phoenix-talk
-  * Source: https://github.com/phoenixframework/phoenix
+| Task             | Description                             |
+|------------------|-----------------------------------------|
+| `mix db.setup`   | Setup eventstore and read models        |
+| `mix db.drop`    | Drop eventstore and read models         |
+| `mix test.watch` | Run tests on code changes (TDD helper)  |

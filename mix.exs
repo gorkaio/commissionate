@@ -25,7 +25,7 @@ defmodule Commissionate.Mixfile do
   def application do
     [
       mod: {Commissionate.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :eventstore]
     ]
   end
 
@@ -40,6 +40,11 @@ defmodule Commissionate.Mixfile do
       {:postgrex, "== 0.13.5"},
       {:gettext, "~> 0.11"},
       {:plug_cowboy, "~> 1.0"},
+      {:commanded, "~> 0.17.2"},
+      {:commanded_eventstore_adapter, "~> 0.4.0", runtime: Mix.env != :test},
+      {:commanded_ecto_projections, "~> 0.6"},
+      {:poison, "~> 3.1"},
+      {:uuid, "~> 1.1"},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false},
       {:credo, "~> 1.0", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0.0-rc.4", only: [:dev], runtime: false},
@@ -49,6 +54,9 @@ defmodule Commissionate.Mixfile do
 
   defp aliases do
     [
+      "db.setup": ["event_store.setup", "ecto.setup"],
+      "db.drop": ["event_store.drop", "ecto.drop"],
+      "event_store.setup": ["event_store.create", "event_store.init"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       "test": ["ecto.create --quiet", "ecto.migrate", "test"]
