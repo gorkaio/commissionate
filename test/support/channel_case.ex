@@ -25,13 +25,13 @@ defmodule CommissionateWeb.ChannelCase do
     end
   end
 
-
   setup tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Commissionate.Repo)
+
     unless tags[:async] do
       Ecto.Adapters.SQL.Sandbox.mode(Commissionate.Repo, {:shared, self()})
     end
+
     :ok
   end
-
 end

@@ -12,7 +12,7 @@ config :commissionate, Commissionate.Repo,
   password: "postgres",
   database: "commissionate_readstore_test",
   hostname: "localhost",
-  pool: Ecto.Adapters.SQL.Sandbox
+  pool_size: 1
 
 config :eventstore, EventStore.Storage,
   serializer: Commanded.Serialization.JsonSerializer,
@@ -20,4 +20,4 @@ config :eventstore, EventStore.Storage,
   password: "postgres",
   database: "commisionate_eventstore_test",
   hostname: "localhost",
-  pool_size: 10  
+  pool_size: 1

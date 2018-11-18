@@ -28,8 +28,9 @@ defmodule CommissionateWeb do
 
   def view do
     quote do
-      use Phoenix.View, root: "lib/commissionate_web/templates",
-                        namespace: CommissionateWeb
+      use Phoenix.View,
+        root: "lib/commissionate_web/templates",
+        namespace: CommissionateWeb
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_flash: 2, view_module: 1]

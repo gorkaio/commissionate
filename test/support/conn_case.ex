@@ -20,19 +20,16 @@ defmodule CommissionateWeb.ConnCase do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
       import CommissionateWeb.Router.Helpers
+      import Commissionate.Factory
+      import Commissionate.Fixture
 
       # The default endpoint for testing
       @endpoint CommissionateWeb.Endpoint
     end
   end
 
-
-  setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Commissionate.Repo)
-    unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Commissionate.Repo, {:shared, self()})
-    end
+  setup _tags do
+    Commissionate.Storage.reset!()
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
-
 end
