@@ -29,7 +29,7 @@ defmodule CommissionateWeb.MerchantControllerTest do
 
     @tag :api
     test "renders errors when data is invalid", %{conn: conn} do
-      merchant = build(:merchant, cif: "98098098")
+      merchant = build(:merchant, cif: "INVALID")
       conn = post(conn, merchant_path(conn, :create), merchant: merchant)
       assert json_response(conn, 422)["errors"] != %{}
     end

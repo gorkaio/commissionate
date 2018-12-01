@@ -8,6 +8,7 @@ defmodule Commissionate.Application do
       supervisor(Commissionate.Repo, []),
       supervisor(CommissionateWeb.Endpoint, []),
       supervisor(Commissionate.Merchants.Supervisor, []),
+      supervisor(Commissionate.Shoppers.Supervisor, []),
       worker(Commissionate.Support.Unique, [])
     ]
 

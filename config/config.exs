@@ -23,6 +23,7 @@ config :vex,
   sources: [
     Commissionate.Support.Validators,
     Commissionate.Merchants.Validators,
+    Commissionate.Shoppers.Validators,
     Vex.Validators
   ]
 

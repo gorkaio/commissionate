@@ -10,5 +10,9 @@ defmodule CommissionateWeb.Router do
     post("/merchants", MerchantController, :create)
     get("/merchants", MerchantController, :list)
     get("/merchants/:cif", MerchantController, :show)
+
+    post("/shoppers", ShopperController, :create)
+    get("/shoppers", ShopperController, :list)
+    get("/shoppers/:nif", ShopperController, :show)
   end
 end

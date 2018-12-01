@@ -12,9 +12,17 @@ defmodule Commissionate.Support.Middleware.Uniqueness do
   end
 
   defimpl Commissionate.Support.Middleware.Uniqueness.UniqueFields, for: Commissionate.Merchants.Commands.Register do
-    def unique(_command), do: [
-      {:cif, "already taken"},
-    ]
+    def unique(_command),
+      do: [
+        {:cif, "already taken"}
+      ]
+  end
+
+  defimpl Commissionate.Support.Middleware.Uniqueness.UniqueFields, for: Commissionate.Shoppers.Commands.Register do
+    def unique(_command),
+      do: [
+        {:nif, "already taken"}
+      ]
   end
 
   alias Commissionate.Support.Unique
@@ -40,10 +48,10 @@ defmodule Commissionate.Support.Middleware.Uniqueness do
   defp ensure_uniqueness(command) do
     command
     |> UniqueFields.unique()
-    |> Enum.reduce_while(:ok, fn ({unique_field, error_message}, _) ->
+    |> Enum.reduce_while(:ok, fn {unique_field, error_message}, _ ->
       value = Map.get(command, unique_field)
 
-      case Unique.claim(unique_field,  value) do
+      case Unique.claim(unique_field, value) do
         :ok -> {:cont, :ok}
         {:error, :already_taken} -> {:halt, {:error, Keyword.new([{unique_field, error_message}])}}
       end

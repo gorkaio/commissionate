@@ -41,8 +41,11 @@ defmodule Commissionate.MerchantsTest do
     @tag :wip
     test "should fail when registering identical cif at same time and return error" do
       merchant = build(:merchant, cif: "A1111111B")
+
       1..2
-      |> Enum.map(fn _ -> Task.async(fn -> Merchants.register_merchant(merchant.name, merchant.email, merchant.cif) end) end)
+      |> Enum.map(fn _ ->
+        Task.async(fn -> Merchants.register_merchant(merchant.name, merchant.email, merchant.cif) end)
+      end)
       |> Enum.map(&Task.await/1)
     end
   end

@@ -35,6 +35,7 @@ defmodule Commissionate.Storage do
     """
     TRUNCATE TABLE
       merchants,
+      shoppers,
       projection_versions
     RESTART IDENTITY;
     """
