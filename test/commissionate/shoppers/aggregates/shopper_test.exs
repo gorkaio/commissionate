@@ -7,10 +7,18 @@ defmodule Commissionate.Shoppers.Aggregates.ShopperTest do
     @tag :unit
     test "should succeed when valid" do
       shopper_uuid = UUID.uuid4()
-      {:ok, command} = Register.new(shopper_uuid, "Alice", "alice@example.com", "11111111H")
-      {:ok, event} = Registered.new(shopper_uuid, "Alice", "alice@example.com", "11111111H")
 
-      assert_events(command, [event])
+      assert_events(
+        Register.new(%{"id" => shopper_uuid, "name" => "Alice", "email" => "alice@example.com", "nif" => "11111111H"}),
+        [
+          Registered.new(%{
+            "id" => shopper_uuid,
+            "name" => "Alice",
+            "email" => "alice@example.com",
+            "nif" => "11111111H"
+          })
+        ]
+      )
     end
   end
 end

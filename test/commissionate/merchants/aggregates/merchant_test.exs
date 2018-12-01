@@ -7,10 +7,13 @@ defmodule Commissionate.Merchants.Aggregates.MerchantTest do
     @tag :unit
     test "should succeed when valid" do
       merchant_uuid = UUID.uuid4()
-      {:ok, command} = Register.new(merchant_uuid, "Acme", "acme@example.com", "A2222222B")
-      {:ok, event} = Registered.new(merchant_uuid, "Acme", "acme@example.com", "A2222222B")
 
-      assert_events(command, [event])
+      assert_events(
+        Register.new(%{"id" => merchant_uuid, "name" => "Acme", "email" => "acme@example.com", "cif" => "A2222222B"}),
+        [
+          Registered.new(%{"id" => merchant_uuid, "name" => "Acme", "email" => "acme@example.com", "cif" => "A2222222B"})
+        ]
+      )
     end
   end
 end

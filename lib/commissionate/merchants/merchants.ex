@@ -10,9 +10,10 @@ defmodule Commissionate.Merchants do
 
   @spec register_merchant(String.t(), String.t(), String.t()) :: :ok | {:error, reason :: term}
   def register_merchant(name, email, cif) do
-    with id <- UUID.uuid4(),
-         {:ok, cmd} <- Register.new(id, name, email, cif),
-         :ok <- Router.dispatch(cmd, consistency: :strong) do
+    id = UUID.uuid4()
+    cmd = Register.new(%{"id" => id, "name" => name, "email" => email, "cif" => cif})
+
+    with :ok <- Router.dispatch(cmd, consistency: :strong) do
       get(Merchant, id)
     else
       reply -> reply

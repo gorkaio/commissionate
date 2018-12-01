@@ -19,23 +19,14 @@ defmodule Commissionate.MerchantsTest do
 
     @tag :integration
     test "should error with invalid data" do
-      assert {:error,
-              [
-                {:error, :name, :presence, "can't be empty"},
-                {:error, :name, :format, "Invalid name"}
-              ]} = Merchants.register_merchant("", @valid_email, @valid_cif)
+      assert {:error, :validation_failure, %{name: ["can't be empty", "Invalid name"]}} =
+               Merchants.register_merchant("", @valid_email, @valid_cif)
 
-      assert {:error,
-              [
-                {:error, :email, :presence, "can't be empty"},
-                {:error, :email, :email, "invalid email"}
-              ]} = Merchants.register_merchant(@valid_name, "", @valid_cif)
+      assert {:error, :validation_failure, %{email: ["can't be empty", "invalid email"]}} =
+               Merchants.register_merchant(@valid_name, "", @valid_cif)
 
-      assert {:error,
-              [
-                {:error, :cif, :presence, "can't be empty"},
-                {:error, :cif, :cif, "invalid CIF"}
-              ]} = Merchants.register_merchant(@valid_name, @valid_email, "")
+      assert {:error, :validation_failure, %{cif: ["can't be empty", "invalid CIF"]}} =
+               Merchants.register_merchant(@valid_name, @valid_email, "")
     end
 
     @tag :wip

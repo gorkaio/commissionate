@@ -19,23 +19,14 @@ defmodule Commissionate.ShoppersTest do
 
     @tag :integration
     test "should error with invalid data" do
-      assert {:error,
-              [
-                {:error, :name, :presence, "can't be empty"},
-                {:error, :name, :format, "Invalid name"}
-              ]} = Shoppers.register_shopper("", @valid_email, @valid_nif)
+      assert {:error, :validation_failure, %{name: ["can't be empty", "Invalid name"]}} =
+               Shoppers.register_shopper("", @valid_email, @valid_nif)
 
-      assert {:error,
-              [
-                {:error, :email, :presence, "can't be empty"},
-                {:error, :email, :email, "invalid email"}
-              ]} = Shoppers.register_shopper(@valid_name, "", @valid_nif)
+      assert {:error, :validation_failure, %{email: ["can't be empty", "invalid email"]}} =
+               Shoppers.register_shopper(@valid_name, "", @valid_nif)
 
-      assert {:error,
-              [
-                {:error, :nif, :presence, "can't be empty"},
-                {:error, :nif, :nif, "invalid NIF"}
-              ]} = Shoppers.register_shopper(@valid_name, @valid_email, "")
+      assert {:error, :validation_failure, %{nif: ["can't be empty", "invalid NIF"]}} =
+               Shoppers.register_shopper(@valid_name, @valid_email, "")
     end
 
     @tag :wip

@@ -15,15 +15,15 @@ defmodule CommissionateWeb.ShopperControllerTest do
           shopper: build(:shopper, name: "Alice", email: "alice@example.com", nif: "11111111H")
         )
 
-      json = json_response(conn, 201)["shopper"]
+      json = json_response(conn, 201)["data"]
 
-      {id, data} = Map.pop(json, :id)
+      {id, data} = Map.pop(json, "id")
       assert {:ok, _} = UUID.info(id)
 
       assert data == %{
                "name" => "Alice",
                "email" => "alice@example.com",
-               "cif" => "11111111H"
+               "nif" => "11111111H"
              }
     end
 
@@ -43,7 +43,7 @@ defmodule CommissionateWeb.ShopperControllerTest do
 
       assert json_response(conn, 422)["errors"] == %{
                "nif" => [
-                 "nif already taken"
+                 "already taken"
                ]
              }
     end

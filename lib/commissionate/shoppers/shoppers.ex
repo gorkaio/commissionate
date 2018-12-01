@@ -10,9 +10,10 @@ defmodule Commissionate.Shoppers do
 
   @spec register_shopper(String.t(), String.t(), String.t()) :: :ok | {:error, reason :: term}
   def register_shopper(name, email, nif) do
-    with id <- UUID.uuid4(),
-         {:ok, cmd} <- Register.new(id, name, email, nif),
-         :ok <- Router.dispatch(cmd, consistency: :strong) do
+    id = UUID.uuid4()
+    cmd = Register.new(%{"id" => id, "name" => name, "email" => email, "nif" => nif})
+
+    with :ok <- Router.dispatch(cmd, consistency: :strong) do
       get(Shopper, id)
     else
       reply -> reply

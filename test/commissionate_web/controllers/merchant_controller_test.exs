@@ -15,9 +15,9 @@ defmodule CommissionateWeb.MerchantControllerTest do
           merchant: build(:merchant, name: "Acme", email: "acme@example.com", cif: "A1111111B")
         )
 
-      json = json_response(conn, 201)["merchant"]
+      json = json_response(conn, 201)["data"]
 
-      {id, data} = Map.pop(json, :id)
+      {id, data} = Map.pop(json, "id")
       assert {:ok, _} = UUID.info(id)
 
       assert data == %{
@@ -43,7 +43,7 @@ defmodule CommissionateWeb.MerchantControllerTest do
 
       assert json_response(conn, 422)["errors"] == %{
                "cif" => [
-                 "cif already taken"
+                 "already taken"
                ]
              }
     end
