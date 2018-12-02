@@ -3,7 +3,6 @@ defmodule Commissionate.Shoppers.Commands.Register do
   Command to register a new Shopper
   """
 
-  alias Commissionate.Shoppers.Validators.Validation
   use Vex.Struct
 
   validates(:id, uuid: true)

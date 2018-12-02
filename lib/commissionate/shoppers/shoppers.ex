@@ -3,7 +3,7 @@ defmodule Commissionate.Shoppers do
   The Shoppers context.
   """
   alias Commissionate.Router
-  alias Commissionate.Shoppers.Commands.Register
+  alias Commissionate.Shoppers.Commands.{Register, PlaceOrder}
   alias Commissionate.Repo
   alias Commissionate.Shoppers.Queries.ShopperByNif
   alias Commissionate.Shoppers.Projections.Shopper
@@ -20,6 +20,7 @@ defmodule Commissionate.Shoppers do
     end
   end
 
+  @spec shopper_by_id!(String.t()) :: Shopper.t() | {:error, reason :: term}
   def shopper_by_id!(uuid) when is_binary(uuid) do
     Repo.get(Shopper, uuid)
   end
@@ -36,6 +37,25 @@ defmodule Commissionate.Shoppers do
 
   def list_shoppers() do
     Repo.all(Shopper)
+  end
+
+  def place_order(shopper_uuid, merchant_cif, amount) do
+    order_id = UUID.uuid4()
+
+    cmd =
+      PlaceOrder.new(%{
+        "id" => shopper_uuid,
+        "order_id" => order_id,
+        "merchant_cif" => merchant_cif,
+        "amount" => amount,
+        "purchase_date" => DateTime.utc_now()
+      })
+
+    with :ok <- Router.dispatch(cmd, consistency: :strong) do
+      get(Shopper, shopper_uuid)
+    else
+      reply -> reply
+    end
   end
 
   defp get(schema, uuid) do

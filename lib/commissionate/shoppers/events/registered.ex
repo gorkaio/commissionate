@@ -3,7 +3,6 @@ defmodule Commissionate.Shoppers.Events.Registered do
   Event triggered when a new Shopper is registered
   """
 
-  alias Commissionate.Shoppers.Validators.Validation
   use Vex.Struct
 
   validates(:id, uuid: true)

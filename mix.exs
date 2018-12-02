@@ -25,7 +25,7 @@ defmodule Commissionate.Mixfile do
   def application do
     [
       mod: {Commissionate.Application, []},
-      extra_applications: [:logger, :runtime_tools, :eventstore, :exconstructor]
+      extra_applications: [:logger, :runtime_tools, :eventstore, :exconstructor, :timex]
     ]
   end
 
@@ -47,6 +47,7 @@ defmodule Commissionate.Mixfile do
       {:uuid, "~> 1.1"},
       {:vex, "~> 0.8.0"},
       {:exconstructor, "~> 1.1"},
+      {:timex, "~> 3.4"},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false},
       {:credo, "~> 1.0", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0.0-rc.4", only: [:dev], runtime: false},

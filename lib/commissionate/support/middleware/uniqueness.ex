@@ -25,6 +25,16 @@ defmodule Commissionate.Support.Middleware.Uniqueness do
       ]
   end
 
+  defimpl Vex.Blank, for: DateTime do
+    def blank?(nil), do: true
+    def blank?(_), do: false
+  end
+
+  defimpl Vex.Blank, for: NaiveDateTime do
+    def blank?(nil), do: true
+    def blank?(_), do: false
+  end
+
   alias Commissionate.Support.Unique
   alias Commanded.Middleware.Pipeline
 
