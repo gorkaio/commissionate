@@ -1,0 +1,233 @@
+{
+	"info": {
+		"_postman_id": "7791c0d2-ba50-4e5b-bce6-51f3454e0d1e",
+		"name": "Commissionate",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Merchants",
+			"item": [
+				{
+					"name": "List merchants",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"merchant\": {\n\t\t\"name\": \"Hello\",\n\t\t\"email\": \"\",\n\t\t\"cif\": \"B1112223D\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "localhost:4000/api/merchants",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"merchants"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create merchant",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"merchant\":{\n    \"name\": \"Acme\",\n    \"email\": \"acme@example.com\",\n    \"cif\": \"A1111111B\"\n  }\n}"
+						},
+						"url": {
+							"raw": "localhost:4000/api/merchants",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"merchants"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show merchant",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:4000/api/merchants/A1111111B",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"merchants",
+								"A1111111B"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Shoppers",
+			"item": [
+				{
+					"name": "List shoppers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:4000/api/shoppers",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"shoppers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create shopper",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"shopper\":{\n    \"name\": \"Alice\",\n    \"email\": \"alice@example.com\",\n    \"nif\": \"11111111B\"\n  }\n}"
+						},
+						"url": {
+							"raw": "localhost:4000/api/shoppers",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"shoppers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show shopper",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:4000/api/shoppers/11111111B",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"shoppers",
+								"11111111B"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List shopper orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:4000/api/shoppers/11111111B/orders",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"shoppers",
+								"11111111B",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show shopper order",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:4000/api/shoppers/11111111B/orders/756106ed-ca38-4630-a3ad-f2fa778dd1e0",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"shoppers",
+								"11111111B",
+								"orders",
+								"756106ed-ca38-4630-a3ad-f2fa778dd1e0"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

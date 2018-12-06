@@ -21,7 +21,9 @@ defmodule CommissionateWeb.MerchantController do
   end
 
   def show(conn, %{"cif" => cif}) do
-    merchant = Merchants.merchant_by_cif(cif)
-    render(conn, "show.json", merchant: merchant)
+    case Merchants.merchant_by_cif(cif) do
+      nil -> {:error, :not_found}
+      merchant -> render(conn, "show.json", merchant: merchant)
+    end
   end
 end

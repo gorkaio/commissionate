@@ -14,5 +14,8 @@ defmodule CommissionateWeb.Router do
     post("/shoppers", ShopperController, :create)
     get("/shoppers", ShopperController, :list)
     get("/shoppers/:nif", ShopperController, :show)
+    post("/shoppers/:nif/orders", ShopperController, :create_order)
+    get("/shoppers/:nif/orders", ShopperController, :list_orders)
+    get("/shoppers/:nif/orders/:order_id", ShopperController, :show_order)
   end
 end

@@ -5,8 +5,9 @@ defmodule Commissionate.Shoppers do
   alias Commissionate.Router
   alias Commissionate.Shoppers.Commands.{Register, PlaceOrder}
   alias Commissionate.Repo
-  alias Commissionate.Shoppers.Queries.ShopperByNif
+  alias Commissionate.Shoppers.Queries.{ShopperByNif, OrdersByShopperNif, OrdersByShopperNifAndId}
   alias Commissionate.Shoppers.Projections.Shopper
+  alias Commissionate.Shoppers.Projections.Order
 
   @spec register_shopper(String.t(), String.t(), String.t()) :: :ok | {:error, reason :: term}
   def register_shopper(name, email, nif) do
@@ -52,10 +53,21 @@ defmodule Commissionate.Shoppers do
       })
 
     with :ok <- Router.dispatch(cmd, consistency: :strong) do
-      get(Shopper, shopper_uuid)
+      get(Order, order_id)
     else
       reply -> reply
     end
+  end
+
+  def orders_by_nif(nif) when is_binary(nif) do
+    nif
+    |> OrdersByShopperNif.new()
+    |> Repo.all()
+  end
+
+  def order_by_nif_and_id(nif, id) when is_binary(nif) and is_binary(id) do
+    OrdersByShopperNifAndId.new(nif, id)
+    |> Repo.one()
   end
 
   defp get(schema, uuid) do

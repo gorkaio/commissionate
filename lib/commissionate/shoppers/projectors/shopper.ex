@@ -20,13 +20,17 @@ defmodule Commissionate.Shoppers.Projectors.Shopper do
     shopper = Shoppers.shopper_by_id!(order_placed.id)
     {:ok, purchase_date, _} = DateTime.from_iso8601(order_placed.purchase_date)
 
-    Ecto.Multi.insert(multi, :order, %Order{
-      id: order_placed.id,
-      shopper_nif: shopper.nif,
-      merchant_cif: order_placed.merchant_cif,
-      amount: order_placed.amount,
-      purchase_date: purchase_date,
-      confirmation_date: nil
-    })
+    Ecto.Multi.insert(
+      multi,
+      :order,
+      %Order{
+        id: order_placed.order_id,
+        shopper_nif: shopper.nif,
+        merchant_cif: order_placed.merchant_cif,
+        amount: order_placed.amount,
+        purchase_date: purchase_date,
+        confirmation_date: nil
+      }
+    )
   end
 end

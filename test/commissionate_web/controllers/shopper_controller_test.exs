@@ -1,10 +1,88 @@
 defmodule CommissionateWeb.ShopperControllerTest do
   use CommissionateWeb.ConnCase
-
+  alias Commissionate.Shoppers
   import Commissionate.Factory
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
+  end
+
+  describe "query shoppers" do
+    @tag :api
+    test "shows an empty list of shoppers when none is registered", %{conn: conn} do
+      conn = get(conn, shopper_path(conn, :list))
+      data = json_response(conn, 200)["data"]
+      assert data == []
+    end
+
+    @tag :api
+    test "shows a list of shoppers when some are registered", %{conn: conn} do
+      {:ok, shopper1} = fixture(:shopper)
+      {:ok, shopper2} = fixture(:shopper)
+      conn = get(conn, shopper_path(conn, :list))
+      data = json_response(conn, 200)["data"]
+
+      assert data == [
+               %{
+                 "id" => shopper1.id,
+                 "name" => shopper1.name,
+                 "email" => shopper1.email,
+                 "nif" => shopper1.nif
+               },
+               %{
+                 "id" => shopper2.id,
+                 "name" => shopper2.name,
+                 "email" => shopper2.email,
+                 "nif" => shopper2.nif
+               }
+             ]
+    end
+
+    @tag :api
+    test "shows details about a shopper", %{conn: conn} do
+      {:ok, shopper} = fixture(:shopper)
+      conn = get(conn, shopper_path(conn, :show, shopper.nif))
+      data = json_response(conn, 200)["data"]
+
+      assert data ==
+               %{
+                 "id" => shopper.id,
+                 "name" => shopper.name,
+                 "email" => shopper.email,
+                 "nif" => shopper.nif
+               }
+    end
+
+    @tag :api
+    test "returns an error when retrieving data of unexisting shopper", %{conn: conn} do
+      conn = get(conn, shopper_path(conn, :show, "12345678X"))
+      data = json_response(conn, 404)["data"]
+      assert data == nil
+    end
+  end
+
+  describe "query orders" do
+    @tag :api
+    test "shows details about an order", %{conn: conn} do
+      {:ok, shopper} = fixture(:shopper)
+      {:ok, merchant} = fixture(:merchant)
+      amount = 23
+
+      {:ok, order} = Shoppers.place_order(shopper.id, merchant.cif, amount)
+      conn = get(conn, shopper_path(conn, :show_order, shopper.nif, order.id))
+
+      data = json_response(conn, 200)["data"]
+
+      assert data ==
+               %{
+                 "id" => order.id,
+                 "amount" => amount,
+                 "merchant_cif" => merchant.cif,
+                 "shopper_nif" => shopper.nif,
+                 "purchase_date" => DateTime.to_iso8601(order.purchase_date),
+                 "confirmation_date" => nil
+               }
+    end
   end
 
   describe "create shopper" do
@@ -45,6 +123,33 @@ defmodule CommissionateWeb.ShopperControllerTest do
                "nif" => [
                  "already taken"
                ]
+             }
+    end
+  end
+
+  describe "create order" do
+    @tag :api
+    test "creates an order when data is valid", %{conn: conn} do
+      {:ok, shopper} = fixture(:shopper)
+      {:ok, merchant} = fixture(:merchant)
+      amount = 23
+
+      conn =
+        post(conn, shopper_path(conn, :create_order, shopper.nif),
+          order: %{"merchant_cif" => merchant.cif, "amount" => amount}
+        )
+
+      json = json_response(conn, 201)["data"]
+
+      {id, data} = Map.pop(json, "id")
+      {_purchase_date, data} = Map.pop(data, "purchase_date")
+      assert {:ok, _} = UUID.info(id)
+
+      assert data == %{
+               "shopper_nif" => shopper.nif,
+               "merchant_cif" => merchant.cif,
+               "amount" => 23,
+               "confirmation_date" => nil
              }
     end
   end

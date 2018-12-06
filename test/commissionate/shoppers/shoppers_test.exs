@@ -2,7 +2,7 @@ defmodule Commissionate.ShoppersTest do
   use Commissionate.DataCase
 
   alias Commissionate.{Shoppers, Merchants}
-  alias Commissionate.Shoppers.Projections.Shopper
+  alias Commissionate.Shoppers.Projections.{Shopper, Order}
   alias Commissionate.Merchants.Projections.Merchant
 
   @valid_name "Alice"
@@ -58,7 +58,7 @@ defmodule Commissionate.ShoppersTest do
 
       assert {:ok, %Merchant{} = merchant} = Merchants.register_merchant("Acme", "acme@example.com", merchant_cif)
       assert {:ok, %Shopper{} = shopper} = Shoppers.register_shopper(@valid_name, @valid_email, @valid_nif)
-      assert {:ok, %Shopper{} = shopper} = Shoppers.place_order(shopper.id, merchant_cif, amount)
+      assert {:ok, %Order{} = order} = Shoppers.place_order(shopper.id, merchant_cif, amount)
     end
   end
 end
