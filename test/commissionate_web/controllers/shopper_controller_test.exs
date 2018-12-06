@@ -80,7 +80,8 @@ defmodule CommissionateWeb.ShopperControllerTest do
                  "merchant_cif" => merchant.cif,
                  "shopper_nif" => shopper.nif,
                  "purchase_date" => DateTime.to_iso8601(order.purchase_date),
-                 "confirmation_date" => nil
+                 "confirmation_date" => nil,
+                 "status" => "UNCONFIRMED"
                }
     end
   end
@@ -149,7 +150,8 @@ defmodule CommissionateWeb.ShopperControllerTest do
                "shopper_nif" => shopper.nif,
                "merchant_cif" => merchant.cif,
                "amount" => 23,
-               "confirmation_date" => nil
+               "confirmation_date" => nil,
+               "status" => "UNCONFIRMED",
              }
     end
   end

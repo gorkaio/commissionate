@@ -221,7 +221,8 @@ Example response:
         "merchant_cif": "A1234567B",
         "id": "756106ed-ca38-4630-a3ad-f2fa778dd1e0",
         "confirmation_date": null,
-        "amount": 2345
+        "amount": 2345,
+        "status": "UNCONFIRMED"
     }
 }
 ```
@@ -252,7 +253,8 @@ Example response:
         "merchant_cif": "A1234567B",
         "id": "756106ed-ca38-4630-a3ad-f2fa778dd1e0",
         "confirmation_date": null,
-        "amount": 2345
+        "amount": 2345,
+        "status": "UNCONFIRMED"
     }
 }
 ```
@@ -273,7 +275,8 @@ Example response:
             "merchant_cif": "A1234567B",
             "id": "756106ed-ca38-4630-a3ad-f2fa778dd1e0",
             "confirmation_date": null,
-            "amount": 2345
+            "amount": 2345,
+            "status": "UNCONFIRMED"
         },
         {
             "shopper_nif": "11111111B",
@@ -281,7 +284,8 @@ Example response:
             "merchant_cif": "A1234567B",
             "id": "fe036db7-24b2-470a-90f9-952c6e59c42f",
             "confirmation_date": null,
-            "amount": 9876
+            "amount": 9876,,
+            "status": "UNCONFIRMED"
         }
     ]
 }
