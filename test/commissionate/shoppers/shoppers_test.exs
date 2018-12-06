@@ -61,4 +61,27 @@ defmodule Commissionate.ShoppersTest do
       assert {:ok, %Order{} = order} = Shoppers.place_order(shopper.id, merchant_cif, amount)
     end
   end
+
+  describe "confirming an order" do
+    @tag :integration
+    test "should error with unexisting order" do
+      order_id = UUID.uuid4()
+      assert {:ok, %Shopper{} = shopper} = Shoppers.register_shopper(@valid_name, @valid_email, @valid_nif)
+
+      assert {:error, :not_found} = Shoppers.confirm_order(shopper.id, order_id)
+    end
+
+    @tag :integration
+    test "should confirm an order when data is valid" do
+      merchant_cif = "A8888888B"
+      amount = 23
+
+      order_id = UUID.uuid4()
+      assert {:ok, %Merchant{} = shopper} = Merchants.register_merchant("Acme", "acme@example.com", merchant_cif)
+      assert {:ok, %Shopper{} = shopper} = Shoppers.register_shopper(@valid_name, @valid_email, @valid_nif)
+      assert {:ok, %Order{} = order} = Shoppers.place_order(shopper.id, merchant_cif, amount)
+
+      assert {:error, :not_found} = Shoppers.confirm_order(shopper.id, order_id)
+    end
+  end
 end

@@ -1,8 +1,8 @@
 defmodule Commissionate.Shoppers.Aggregates.ShopperTest do
   use Commissionate.AggregateCase, aggregate: Commissionate.Shoppers.Aggregates.Shopper
 
-  alias Commissionate.Shoppers.Commands.{Register, PlaceOrder}
-  alias Commissionate.Shoppers.Events.{Registered, OrderPlaced}
+  alias Commissionate.Shoppers.Commands.{Register, PlaceOrder, ConfirmOrder}
+  alias Commissionate.Shoppers.Events.{Registered, OrderPlaced, OrderConfirmed}
 
   describe "register shopper" do
     @tag :unit
@@ -57,6 +57,49 @@ defmodule Commissionate.Shoppers.Aggregates.ShopperTest do
             "merchant_cif" => merchant_cif,
             "amount" => amount,
             "purchase_date" => purchase_date
+          })
+        ]
+      )
+    end
+  end
+
+  describe "confirming an order" do
+    @tag :unit
+    test "should succeed when valid" do
+      shopper_uuid = UUID.uuid4()
+      order_id = UUID.uuid4()
+      purchase_date = Ecto.DateTime.utc()
+      confirmation_date = Ecto.DateTime.utc()
+      amount = 23
+      merchant_cif = "A8888888B"
+      nif = "11111111H"
+
+      assert_events(
+        [
+          Registered.new(%{
+            "id" => shopper_uuid,
+            "name" => "Alice",
+            "email" => "alice@example.com",
+            "nif" => nif
+          }),
+          OrderPlaced.new(%{
+            "id" => shopper_uuid,
+            "order_id" => order_id,
+            "merchant_cif" => merchant_cif,
+            "amount" => amount,
+            "purchase_date" => purchase_date
+          })
+        ],
+        ConfirmOrder.new(%{
+          "id" => shopper_uuid,
+          "order_id" => order_id,
+          "confirmation_date" => confirmation_date
+        }),
+        [
+          OrderConfirmed.new(%{
+            "id" => shopper_uuid,
+            "order_id" => order_id,
+            "confirmation_date" => confirmation_date
           })
         ]
       )
