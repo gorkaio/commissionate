@@ -151,7 +151,85 @@ defmodule CommissionateWeb.ShopperControllerTest do
                "merchant_cif" => merchant.cif,
                "amount" => 23,
                "confirmation_date" => nil,
-               "status" => "UNCONFIRMED",
+               "status" => "UNCONFIRMED"
+             }
+    end
+
+    @tag :api
+    test "render errors when merchant is not registered", %{conn: conn} do
+      {:ok, shopper} = fixture(:shopper)
+
+      # attempt to register with unexisting marchant
+      conn =
+        post(conn, shopper_path(conn, :create_order, shopper.nif),
+          order: %{"merchant_cif" => "A0000000X", "amount" => 23}
+        )
+
+      assert json_response(conn, 422)["errors"] == %{
+               "merchant_cif" => [
+                 "unregistered merchant"
+               ]
+             }
+    end
+
+    @tag :api
+    test "render errors when amount is invalid", %{conn: conn} do
+      {:ok, shopper} = fixture(:shopper)
+      {:ok, merchant} = fixture(:merchant)
+
+      conn =
+        post(conn, shopper_path(conn, :create_order, shopper.nif),
+          order: %{"merchant_cif" => merchant.cif, "amount" => "ABC"}
+        )
+
+      assert json_response(conn, 422)["errors"] == %{
+               "amount" => [
+                 "invalid amount"
+               ]
+             }
+    end
+  end
+
+  describe "confirm order" do
+    @tag :api
+    test "confirms an existing order in unconfirmed status", %{conn: conn} do
+      {:ok, shopper} = fixture(:shopper)
+      {:ok, merchant} = fixture(:merchant)
+      {:ok, order} = Shoppers.place_order(shopper.id, merchant.cif, 23)
+
+      conn = patch(conn, shopper_path(conn, :update_order, shopper.nif, order.id), order: %{"status" => "CONFIRMED"})
+
+      json = json_response(conn, 200)["data"]
+      {confirmation_date, data} = Map.pop(json, "confirmation_date")
+      assert confirmation_date !== nil
+
+      assert data == %{
+               "id" => order.id,
+               "merchant_cif" => merchant.cif,
+               "shopper_nif" => shopper.nif,
+               "amount" => order.amount,
+               "purchase_date" => DateTime.to_iso8601(order.purchase_date),
+               "status" => "CONFIRMED"
+             }
+    end
+
+    @tag :api
+    test "does nothing when confirming an already confirmed order", %{conn: conn} do
+      {:ok, shopper} = fixture(:shopper)
+      {:ok, merchant} = fixture(:merchant)
+      {:ok, order} = Shoppers.place_order(shopper.id, merchant.cif, 23)
+      {:ok, order} = Shoppers.confirm_order(shopper.id, order.id)
+
+      conn = patch(conn, shopper_path(conn, :update_order, shopper.nif, order.id), order: %{"status" => "CONFIRMED"})
+
+      assert json_response(conn, 200)["data"] == %{
+               "id" => order.id,
+               "merchant_cif" => merchant.cif,
+               "shopper_nif" => shopper.nif,
+               "amount" => order.amount,
+               "purchase_date" => DateTime.to_iso8601(order.purchase_date),
+               "confirmation_date" => DateTime.to_iso8601(order.confirmation_date),
+               "status" => "CONFIRMED"
              }
     end
   end

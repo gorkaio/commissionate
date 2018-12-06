@@ -11,7 +11,8 @@ defmodule CommissionateWeb.OrderView do
   end
 
   def render("order.json", %{order: order}) do
-    status = if (order.confirmation_date == nil), do: "UNCONFIRMED", else: "CONFIRMED"
+    status = if order.confirmation_date == nil, do: "UNCONFIRMED", else: "CONFIRMED"
+
     %{
       id: order.id,
       shopper_nif: order.shopper_nif,

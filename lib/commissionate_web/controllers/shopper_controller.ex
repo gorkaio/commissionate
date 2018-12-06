@@ -42,6 +42,16 @@ defmodule CommissionateWeb.ShopperController do
     end
   end
 
+  def update_order(conn, %{"nif" => nif, "order_id" => order_id, "order" => %{"status" => "CONFIRMED"}}) do
+    with {:ok, shopper} <- shopper(nif),
+         {:ok, %Order{} = order} <- Shoppers.confirm_order(shopper.id, order_id) do
+      conn
+      |> put_status(:ok)
+      |> put_resp_header("location", shopper_path(conn, :show_order, shopper.nif, order_id))
+      |> render(CommissionateWeb.OrderView, "show.json", order: order)
+    end
+  end
+
   def show_order(conn, %{"nif" => nif, "order_id" => order_id}) do
     with {:ok, %Order{} = order} <- order(nif, order_id) do
       render(conn, CommissionateWeb.OrderView, "show.json", order: order)

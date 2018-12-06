@@ -238,6 +238,55 @@ Should any field validation fail, the response will be show an HTTP status code 
 }
 ```
 
+#### Confirm and order
+
+Registered orders can be confirmed through a PATCH operation on the status field or the order
+
+| HTTP Verb | URL                                 | Required fields       | Headers                        |
+|-----------|-------------------------------------|-----------------------|--------------------------------|
+| PATCH     | /api/shoppers/:nif/orders/:order_id | nif, order_id, status | Content-Type: application/json |
+
+Example request:
+
+```
+{
+	"order": {
+		"status": "CONFIRMED"
+	}
+}
+```
+
+Example response:
+
+| Headers                                                                       |
+|-------------------------------------------------------------------------------|
+| location: /api/shoppers/11111111B/orders/756106ed-ca38-4630-a3ad-f2fa778dd1e0 |
+
+```
+{
+    "data": {
+        "shopper_nif": "11111111B",
+        "purchase_date": "2018-12-06T09:37:01.338119Z",
+        "merchant_cif": "A1234567B",
+        "id": "756106ed-ca38-4630-a3ad-f2fa778dd1e0",
+        "confirmation_date": null,
+        "amount": 2345,
+        "status": "CONFIRMED"
+    }
+}
+```
+
+Should any field validation fail, the response will be show an HTTP status code `422` with body like:
+```
+{
+    "errors": {
+        "status": [
+            "invalid status"
+        ]
+    }
+}
+```
+
 #### Show order data
 
 | HTTP Verb | URL                                  | Required fields  |

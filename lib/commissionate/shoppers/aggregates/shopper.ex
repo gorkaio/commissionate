@@ -4,22 +4,13 @@ defmodule Commissionate.Shoppers.Aggregates.Shopper do
   """
   alias __MODULE__
 
-  alias Commissionate.Shoppers.Commands.{Register, PlaceOrder}
-  alias Commissionate.Shoppers.Events.{Registered, OrderPlaced}
+  alias Commissionate.Shoppers.Commands.{Register, PlaceOrder, ConfirmOrder}
+  alias Commissionate.Shoppers.Events.{Registered, OrderPlaced, OrderConfirmed}
+
+  @order_unconfirmed "UNCONFIRMED"
+  @order_confirmed "CONFIRMED"
 
   defstruct id: nil, orders: %{}
-
-  defmodule Order do
-    @derive [Poison.Encoder]
-    @opaque t :: %__MODULE__{
-              merchant_cif: String.t(),
-              amount: Integer.t(),
-              purchase_date: Date.t(),
-              confirmation_date: Date.t()
-            }
-    defstruct [:merchant_cif, :amount, :purchase_date, :confirmation_date]
-    use ExConstructor
-  end
 
   @doc """
   Handle registration commands
@@ -37,14 +28,41 @@ defmodule Commissionate.Shoppers.Aggregates.Shopper do
   @spec execute(%Shopper{}, PlaceOrder.t()) :: %PlaceOrder{} | {:error, reason :: term}
   def execute(%Shopper{id: id}, %PlaceOrder{}) when id == nil, do: {:error, :unregistered_user}
 
-  def execute(%Shopper{} = _shopper, %PlaceOrder{} = cmd) do
-    %OrderPlaced{
-      id: cmd.id,
-      order_id: cmd.order_id,
-      merchant_cif: cmd.merchant_cif,
-      amount: cmd.amount,
-      purchase_date: cmd.purchase_date
-    }
+  def execute(%Shopper{} = shopper, %PlaceOrder{} = cmd) do
+    if !Map.has_key?(shopper.orders, cmd.order_id) do
+      %OrderPlaced{
+        id: cmd.id,
+        order_id: cmd.order_id,
+        merchant_cif: cmd.merchant_cif,
+        amount: cmd.amount,
+        purchase_date: cmd.purchase_date
+      }
+    else
+      {:error, :already_taken}
+    end
+  end
+
+  @doc """
+  Handle order confirmation commands
+  """
+  @spec execute(%Shopper{}, ConfirmOrder.t()) :: %ConfirmOrder{} | {:error, reason :: term}
+  def execute(%Shopper{id: id}, %ConfirmOrder{}) when id == nil, do: {:error, :unregistered_user}
+
+  def execute(%Shopper{} = shopper, %ConfirmOrder{} = cmd) do
+    case Map.get(shopper.orders, cmd.order_id) do
+      @order_unconfirmed ->
+        %OrderConfirmed{
+          id: cmd.id,
+          order_id: cmd.order_id,
+          confirmation_date: cmd.confirmation_date
+        }
+
+      @order_confirmed ->
+        []
+
+      nil ->
+        {:error, :not_found}
+    end
   end
 
   @doc """
@@ -54,8 +72,17 @@ defmodule Commissionate.Shoppers.Aggregates.Shopper do
     %Shopper{id: ev.id}
   end
 
+  @doc """
+  Apply changes to state after a successful order registration
+  """
   def apply(state, %OrderPlaced{} = ev) do
-    order = %Order{merchant_cif: ev.merchant_cif, amount: ev.amount, purchase_date: ev.purchase_date}
-    %Shopper{state | orders: Map.put(state.orders, ev.order_id, order)}
+    %Shopper{state | orders: Map.put(state.orders, ev.order_id, @order_unconfirmed)}
+  end
+
+  @doc """
+  Apply changes to state after a successful order confirmation
+  """
+  def apply(state, %OrderConfirmed{} = ev) do
+    %Shopper{state | orders: Map.put(state.orders, ev.order_id, @order_confirmed)}
   end
 end

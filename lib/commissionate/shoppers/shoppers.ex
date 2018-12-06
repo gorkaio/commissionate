@@ -3,7 +3,7 @@ defmodule Commissionate.Shoppers do
   The Shoppers context.
   """
   alias Commissionate.Router
-  alias Commissionate.Shoppers.Commands.{Register, PlaceOrder}
+  alias Commissionate.Shoppers.Commands.{Register, PlaceOrder, ConfirmOrder}
   alias Commissionate.Repo
   alias Commissionate.Shoppers.Queries.{ShopperByNif, OrdersByShopperNif, OrdersByShopperNifAndId}
   alias Commissionate.Shoppers.Projections.Shopper
@@ -40,16 +40,31 @@ defmodule Commissionate.Shoppers do
     Repo.all(Shopper)
   end
 
-  def place_order(shopper_uuid, merchant_cif, amount) do
+  def place_order(shopper_id, merchant_cif, amount) do
     order_id = UUID.uuid4()
 
     cmd =
       PlaceOrder.new(%{
-        "id" => shopper_uuid,
+        "id" => shopper_id,
         "order_id" => order_id,
         "merchant_cif" => merchant_cif,
         "amount" => amount,
         "purchase_date" => DateTime.utc_now()
+      })
+
+    with :ok <- Router.dispatch(cmd, consistency: :strong) do
+      get(Order, order_id)
+    else
+      reply -> reply
+    end
+  end
+
+  def confirm_order(shopper_id, order_id) do
+    cmd =
+      ConfirmOrder.new(%{
+        "id" => shopper_id,
+        "order_id" => order_id,
+        "confirmation_date" => DateTime.utc_now()
       })
 
     with :ok <- Router.dispatch(cmd, consistency: :strong) do
