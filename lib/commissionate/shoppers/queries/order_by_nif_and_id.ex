@@ -1,4 +1,4 @@
-defmodule Commissionate.Shoppers.Queries.OrdersByShopperNifAndId do
+defmodule Commissionate.Shoppers.Queries.OrderByShopperNifAndId do
   import Ecto.Query
 
   alias Commissionate.Shoppers.Projections.Order

@@ -5,7 +5,7 @@ defmodule Commissionate.Shoppers do
   alias Commissionate.Router
   alias Commissionate.Shoppers.Commands.{Register, PlaceOrder, ConfirmOrder}
   alias Commissionate.Repo
-  alias Commissionate.Shoppers.Queries.{ShopperByNif, OrdersByShopperNif, OrdersByShopperNifAndId}
+  alias Commissionate.Shoppers.Queries.{ShopperByNif, OrdersByShopperNif, OrderByShopperNifAndId, OrderByShopperAndId}
   alias Commissionate.Shoppers.Projections.Shopper
   alias Commissionate.Shoppers.Projections.Order
 
@@ -81,7 +81,12 @@ defmodule Commissionate.Shoppers do
   end
 
   def order_by_nif_and_id(nif, id) when is_binary(nif) and is_binary(id) do
-    OrdersByShopperNifAndId.new(nif, id)
+    OrderByShopperNifAndId.new(nif, id)
+    |> Repo.one()
+  end
+
+  def order_by_shopper_and_id(shopper_id, id) when is_binary(shopper_id) and is_binary(id) do
+    OrderByShopperAndId.new(shopper_id, id)
     |> Repo.one()
   end
 

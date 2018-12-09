@@ -3,6 +3,7 @@ defmodule Commissionate.Router do
 
   alias Commissionate.{Merchants.Aggregates.Merchant, Shoppers.Aggregates.Shopper}
   alias Commissionate.Merchants.Commands.Register, as: RegisterMerchant
+  alias Commissionate.Merchants.Commands.ConfirmOrder, as: ConfirmOrderForMerchant
   alias Commissionate.Shoppers.Commands.Register, as: RegisterShopper
   alias Commissionate.Shoppers.Commands.{PlaceOrder, ConfirmOrder}
   alias Commissionate.Support.Middleware.{Uniqueness, Validate}
@@ -10,6 +11,6 @@ defmodule Commissionate.Router do
   middleware(Validate)
   middleware(Uniqueness)
 
-  dispatch([RegisterMerchant], to: Merchant, identity: :id)
+  dispatch([RegisterMerchant, ConfirmOrderForMerchant], to: Merchant, identity: :id)
   dispatch([RegisterShopper, PlaceOrder, ConfirmOrder], to: Shopper, identity: :id)
 end

@@ -3,9 +3,9 @@ defmodule Commissionate.Merchants do
   The Merchants context.
   """
   alias Commissionate.Router
-  alias Commissionate.Merchants.Commands.Register
+  alias Commissionate.Merchants.Commands.{Register, ConfirmOrder}
   alias Commissionate.Repo
-  alias Commissionate.Merchants.Queries.MerchantByCif
+  alias Commissionate.Merchants.Queries.{MerchantByCif, DisbursementByMerchantAndDate}
   alias Commissionate.Merchants.Projections.Merchant
 
   @spec register_merchant(String.t(), String.t(), String.t()) :: :ok | {:error, reason :: term}
@@ -15,6 +15,23 @@ defmodule Commissionate.Merchants do
 
     with :ok <- Router.dispatch(cmd, consistency: :strong) do
       get(Merchant, id)
+    else
+      reply -> reply
+    end
+  end
+
+  def confirm_order(merchant_id, shopper_id, order_id, amount, confirmation_date) do
+    cmd =
+      ConfirmOrder.new(%{
+        "id" => merchant_id,
+        "shopper_id" => shopper_id,
+        "order_id" => order_id,
+        "amount" => amount,
+        "confirmation_date" => confirmation_date
+      })
+
+    with :ok <- Router.dispatch(cmd, consistency: :strong) do
+      Repo.get(Merchant, merchant_id)
     else
       reply -> reply
     end
@@ -33,6 +50,11 @@ defmodule Commissionate.Merchants do
   end
 
   def merchant_by_cif(_), do: nil
+
+  def disbursement_by_merchant_and_date(merchant_id, payment_date) do
+    DisbursementByMerchantAndDate.new(merchant_id, payment_date)
+    |> Repo.one()
+  end
 
   def list_merchants() do
     Repo.all(Merchant)

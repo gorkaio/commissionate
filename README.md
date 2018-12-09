@@ -192,6 +192,8 @@ Example response:
 
 #### Register new order
 
+Amounts are always in cents
+
 | HTTP Verb | URL                | Required fields              | Headers                        |
 |-----------|--------------------|------------------------------|--------------------------------|
 | POST      | /api/shoppers/:nif | amount (cents), merchant_cif | Content-Type: application/json |
