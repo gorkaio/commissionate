@@ -1,7 +1,7 @@
 use Mix.Config
 
 config :commissionate, CommissionateWeb.Endpoint,
-  http: [port: 4000],
+  http: [port: System.get_env("PORT")],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
@@ -9,10 +9,10 @@ config :commissionate, CommissionateWeb.Endpoint,
 
 config :eventstore, EventStore.Storage,
   serializer: Commanded.Serialization.JsonSerializer,
-  username: "postgres",
-  password: "postgres",
+  username: System.get_env("POSTGRES_USER"),
+  password: System.get_env("POSTGRES_PASSWORD"),
   database: "commisionate_eventstore_dev",
-  hostname: "localhost",
+  hostname: System.get_env("POSTGRES_HOST"),
   pool_size: 10
 
 # ## SSL Support
@@ -40,8 +40,8 @@ config :phoenix, :stacktrace_depth, 20
 
 config :commissionate, Commissionate.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
+  username: System.get_env("POSTGRES_USER"),
+  password: System.get_env("POSTGRES_PASSWORD"),
   database: "commissionate_readstore_dev",
-  hostname: "localhost",
+  hostname: System.get_env("POSTGRES_HOST"),
   pool_size: 10

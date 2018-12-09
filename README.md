@@ -2,6 +2,23 @@
 
 CQRS+ES application developed with Elixir
 
+## Running the app
+
+### Pre-requisites
+
+You will need to have docker available and a working internet connection to retrieve the app dependencies.
+
+### Run
+
+```sh
+docker-compose build
+docker-compose up
+```
+
+This will build the containers, fetch dependencies and compile the app and finally start it on `http://localhost:4000`. It will take quite some time the first time while the app is being compiled, so please be patient.
+
+See the API documentation below.
+
 ## API
 
 ### Merchants

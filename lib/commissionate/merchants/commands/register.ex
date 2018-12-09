@@ -2,8 +2,6 @@ defmodule Commissionate.Merchants.Commands.Register do
   @moduledoc """
   Command to register a new Merchant
   """
-
-  alias Commissionate.Merchants.Validators.Validation
   use Vex.Struct
 
   validates(:id, uuid: true)

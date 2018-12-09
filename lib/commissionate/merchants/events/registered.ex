@@ -2,8 +2,6 @@ defmodule Commissionate.Merchants.Events.Registered do
   @moduledoc """
     Event triggered when a new Merchant is registered
   """
-
-  alias Commissionate.Merchants.Validators.Validation
   use Vex.Struct
 
   validates(:id, uuid: true)
