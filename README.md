@@ -17,7 +17,7 @@ docker-compose up
 
 This will build the containers, fetch dependencies and compile the app and finally start it on `http://localhost:4000`. It will take quite some time the first time while the app is being compiled, so please be patient.
 
-See the API documentation below.
+See the API documentation below or import the Postman collection available on the project root to play with the app.
 
 ## API
 
