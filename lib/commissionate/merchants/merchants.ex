@@ -5,7 +5,14 @@ defmodule Commissionate.Merchants do
   alias Commissionate.Router
   alias Commissionate.Merchants.Commands.{Register, ConfirmOrder}
   alias Commissionate.Repo
-  alias Commissionate.Merchants.Queries.{MerchantByCif, DisbursementByMerchantAndDate}
+
+  alias Commissionate.Merchants.Queries.{
+    MerchantByCif,
+    MerchantsByFilters,
+    DisbursementByMerchantAndDate,
+    DisbursementByFilters
+  }
+
   alias Commissionate.Merchants.Projections.Merchant
 
   @spec register_merchant(String.t(), String.t(), String.t()) :: :ok | {:error, reason :: term}
@@ -51,13 +58,19 @@ defmodule Commissionate.Merchants do
 
   def merchant_by_cif(_), do: nil
 
+  def list_disbursements(params) do
+    DisbursementByFilters.new(params)
+    |> Repo.all()
+  end
+
   def disbursement_by_merchant_and_date(merchant_id, payment_date) do
     DisbursementByMerchantAndDate.new(merchant_id, payment_date)
     |> Repo.one()
   end
 
-  def list_merchants() do
-    Repo.all(Merchant)
+  def list_merchants(params) do
+    MerchantsByFilters.new(params)
+    |> Repo.all()
   end
 
   defp get(schema, uuid) do

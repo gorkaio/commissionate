@@ -1,5 +1,7 @@
 # Commissionate
 
+CQRS+ES application developed with Elixir
+
 ## API
 
 ### Merchants
@@ -72,9 +74,9 @@ Example response:
 
 #### List existing merchants
 
-| HTTP Verb | URL            |
-|-----------|----------------|
-| GET       | /api/merchants |
+| HTTP Verb | URL            | Optional query filters (ie: /api/merchants?name=Acme) |
+|-----------|----------------|-------------------------------------------------------|
+| GET       | /api/merchants | id, cif, email, name                                  |
 
 Example response:
 ```
@@ -166,9 +168,9 @@ Example response:
 
 #### List existing shoppers
 
-| HTTP Verb | URL           |
-|-----------|---------------|
-| GET       | /api/shoppers |
+| HTTP Verb | URL           | Optional query filters (ie: /api/shoppers?nif=11111111B) |
+|-----------|---------------|----------------------------------------------------------|
+| GET       | /api/shoppers | id, nif, email, name                                     |
 
 Example response:
 ```
@@ -240,7 +242,7 @@ Should any field validation fail, the response will be show an HTTP status code 
 }
 ```
 
-#### Confirm and order
+#### Confirm an order
 
 Registered orders can be confirmed through a PATCH operation on the status field or the order
 
@@ -337,6 +339,61 @@ Example response:
             "confirmation_date": null,
             "amount": 9876,,
             "status": "UNCONFIRMED"
+        }
+    ]
+}
+```
+
+### Orders
+
+#### List orders
+
+| HTTP Verb | URL         | Optional query filters (ie: /api/orders?shopper_nif=11111111B)                       |
+|-----------|-------------|--------------------------------------------------------------------------------------|
+| GET       | /api/orders | shopper_id, shopper_nif, merchant_id, merchant_cif, purchase_date, confirmation_date |                                                            |
+
+Example response:
+```
+{
+    "data": [
+        {
+            "shopper_nif": "11111111B",
+            "purchase_date": "2018-12-06T09:37:01.338119Z",
+            "merchant_cif": "A1234567B",
+            "id": "756106ed-ca38-4630-a3ad-f2fa778dd1e0",
+            "confirmation_date": null,
+            "amount": 2345,
+            "status": "UNCONFIRMED"
+        },
+        {
+            "shopper_nif": "11111111B",
+            "purchase_date": "2018-12-06T09:38:58.716741Z",
+            "merchant_cif": "A1234567B",
+            "id": "fe036db7-24b2-470a-90f9-952c6e59c42f",
+            "confirmation_date": null,
+            "amount": 9876,,
+            "status": "UNCONFIRMED"
+        }
+    ]
+}
+```
+
+### Disbursements
+
+#### List disbursements
+
+| HTTP Verb | URL                | Optional query filters (ie: /api/disbursements?merchant_cif=A1111111B) |
+|-----------|--------------------|------------------------------------------------------------------------|
+| GET       | /api/disbursements | merchant_id, merchant_cif, payment_date                                |
+
+Example response:
+```
+{
+    "data": [
+        {
+            "payment_date": "2018-12-10",
+            "merchant_cif": "A1111111B",
+            "amount": 19734
         }
     ]
 }

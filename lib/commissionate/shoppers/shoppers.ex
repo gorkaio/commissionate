@@ -5,7 +5,16 @@ defmodule Commissionate.Shoppers do
   alias Commissionate.Router
   alias Commissionate.Shoppers.Commands.{Register, PlaceOrder, ConfirmOrder}
   alias Commissionate.Repo
-  alias Commissionate.Shoppers.Queries.{ShopperByNif, OrdersByShopperNif, OrderByShopperNifAndId, OrderByShopperAndId}
+
+  alias Commissionate.Shoppers.Queries.{
+    ShopperByNif,
+    ShoppersByFilters,
+    OrdersByFilters,
+    OrdersByShopperNif,
+    OrderByShopperNifAndId,
+    OrderByShopperAndId
+  }
+
   alias Commissionate.Shoppers.Projections.Shopper
   alias Commissionate.Shoppers.Projections.Order
 
@@ -36,8 +45,14 @@ defmodule Commissionate.Shoppers do
 
   def shopper_by_nif(_), do: nil
 
-  def list_shoppers() do
-    Repo.all(Shopper)
+  def list_shoppers(params) do
+    ShoppersByFilters.new(params)
+    |> Repo.all()
+  end
+
+  def list_orders(params) do
+    OrdersByFilters.new(params)
+    |> Repo.all()
   end
 
   def place_order(shopper_id, merchant_cif, amount) do

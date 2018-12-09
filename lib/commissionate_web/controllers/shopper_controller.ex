@@ -6,8 +6,8 @@ defmodule CommissionateWeb.ShopperController do
 
   action_fallback(CommissionateWeb.FallbackController)
 
-  def list(conn, _params) do
-    shoppers = Shoppers.list_shoppers()
+  def list(conn, params) do
+    shoppers = Shoppers.list_shoppers(params)
     render(conn, "index.json", shoppers: shoppers)
   end
 

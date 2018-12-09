@@ -6,8 +6,8 @@ defmodule CommissionateWeb.MerchantController do
 
   action_fallback(CommissionateWeb.FallbackController)
 
-  def list(conn, _params) do
-    merchants = Merchants.list_merchants()
+  def list(conn, params) do
+    merchants = Merchants.list_merchants(params)
     render(conn, "index.json", merchants: merchants)
   end
 

@@ -11,6 +11,8 @@ defmodule CommissionateWeb.Router do
     get("/merchants", MerchantController, :list)
     get("/merchants/:cif", MerchantController, :show)
 
+    get("/disbursements", DisbursementController, :list)
+
     post("/shoppers", ShopperController, :create)
     get("/shoppers", ShopperController, :list)
     get("/shoppers/:nif", ShopperController, :show)
@@ -18,5 +20,7 @@ defmodule CommissionateWeb.Router do
     get("/shoppers/:nif/orders", ShopperController, :list_orders)
     get("/shoppers/:nif/orders/:order_id", ShopperController, :show_order)
     patch("/shoppers/:nif/orders/:order_id", ShopperController, :update_order)
+
+    get("/orders", OrdersController, :list)
   end
 end
